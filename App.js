@@ -2,13 +2,20 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import Constants from "expo-constants";
+const { manifest } = Constants;
 import Toast from 'react-native-toast-message';
 import * as Device from 'expo-device';
 
 
 export default function App() {
+  const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
+    ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
+    : `api.example.com`;
+  console.log(api);
+  
   const toastConfig = {
-    'error': (internalState) => (
+    'error': () => (
       <View style=
         {{
           height: 60,
@@ -22,7 +29,6 @@ export default function App() {
         <Text>{toastMessage}</Text>
       </View>
     ),
-    'error': () => { },
     'info': () => { },
     'any_custom_type': () => { }
   }
@@ -32,18 +38,10 @@ export default function App() {
   var toastMessage = "";
 
   const _onPressLogin = () => {
-    console.log(Device.brand);
-    console.log(Device.manufacturer);
-    console.log(Device.osName);
-    console.log(Device.osVersion);
-    console.log(Device.deviceName);
-    console.log(Device.productName);
-    console.log(Device.designName);
     if (login_id == "") {
       toastMessage = "Please enter Login ID";
       Toast.show({
-        type: 'error',
-        text1: 'error',
+        text1: 'Error',
         text2: toastMessage,
       });
       return;
@@ -56,7 +54,39 @@ export default function App() {
       });
       return;
     }
-    alert('Login Initiated');
+
+    fetch('https://www.classupclient.com/auth/login1/', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        'user': login_id,
+        'password': password,
+        'device_type': Device.brand,
+        'model': Device.manufacturer,
+        'os': Device.osName,
+      })
+    })
+    .then((response) => response.json())
+    .then((json) => {
+      if (json.login == "successful") {
+        Toast.show({
+          text1: 'Login Successful',
+          text2: json.welcome_message,
+        });
+      }
+      else  {
+        Toast.show({
+          text1: 'Login Failed',
+          text2: json.welcome_message,
+        });
+      }
+    })
+    .catch((error) => {
+      console.error(error);
+    });;
   }
 
   return (
