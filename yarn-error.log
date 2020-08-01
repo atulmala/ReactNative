@@ -1,5 +1,5 @@
 Arguments: 
-  /usr/local/bin/node /usr/local/Cellar/yarn/1.21.1/libexec/bin/yarn.js add @reach-navigation/stack
+  /usr/local/bin/node /usr/local/Cellar/yarn/1.21.1/libexec/bin/yarn.js add @types/react-native-toast-message
 
 PATH: 
   /Users/atul/google-cloud-sdk/bin:/us/local/bin:/Library/Frameworks/Python.framework/Versions/2.7/bin/:.:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/mysql/bin/:/Library/Frameworks/Mono.framework/Versions/Current/Commands:/Users/atul/flutter/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/@reach-navigation%2fstack: Not found
+  Error: https://registry.yarnpkg.com/@types%2freact-native-toast-message: Not found
       at Request.params.callback [as _callback] (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:66947:18)
       at Request.self.callback (/usr/local/Cellar/yarn/1.21.1/libexec/lib/cli.js:140665:22)
       at Request.emit (events.js:182:13)

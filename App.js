@@ -8,7 +8,9 @@ const { manifest } = Constants;
 import Toast from 'react-native-toast-message';
 import * as Device from 'expo-device';
 
-export default function App() {
+const Stack = createStackNavigator();
+
+function LoginScreen() {
   const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
     ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
     : `api.example.com`;
@@ -17,8 +19,6 @@ export default function App() {
   var login_id = "";
   var password = "";
   var toastMessage = "";
-
-  const Stack = createStackNavigator();
 
   const _onPressLogin = () => {
     if (login_id == "") {
@@ -88,45 +88,54 @@ export default function App() {
       })
       .catch((error) => {
         console.error(error);
-      });;
-  }
+      });
+  };
 
   return (
-    <NavigationContainer>
-      
-      <View style={styles.container}>
-        <Toast ref={(ref) => Toast.setRef(ref)} />
-        <Text style={styles.logo}>ClassUp</Text>
-        <View style={styles.inputView} >
-          <TextInput
-            style={styles.inputText}
-            defaultValue={login_id}
-            placeholder="Enter Login ID"
-            placeholderTextColor="#e8eaf6"
-            keyboardType="email-address"
-            onChangeText={text => login_id = text} />
-        </View>
-        <View style={styles.inputView} >
-          <TextInput
-            secureTextEntry
-            style={styles.inputText}
-            defaultValue={password}
-            placeholder="Enter Password"
-            placeholderTextColor="#e8eaf6"
-            onChangeText={text => password = text} />
-        </View>
-        <TouchableOpacity
-          style={styles.loginBtn}
-          onPress={_onPressLogin}>
-          <Text style={styles.loginText}>LOGIN</Text>
-        </TouchableOpacity>
-        <TouchableOpacity>
-          <Text style={styles.forgot}>Forgot Password?</Text>
-        </TouchableOpacity>
+    <View style={styles.container}>
+      <Toast ref={(ref) => Toast.setRef(ref)} />
+      <Text style={styles.logo}>ClassUp</Text>
+      <View style={styles.inputView} >
+        <TextInput
+          style={styles.inputText}
+          defaultValue={login_id}
+          placeholder="Enter Login ID"
+          placeholderTextColor="#e8eaf6"
+          keyboardType="email-address"
+          onChangeText={text => login_id = text} />
       </View>
+      <View style={styles.inputView} >
+        <TextInput
+          secureTextEntry
+          style={styles.inputText}
+          defaultValue={password}
+          placeholder="Enter Password"
+          placeholderTextColor="#e8eaf6"
+          onChangeText={text => password = text} />
+      </View>
+      <TouchableOpacity
+        style={styles.loginBtn}
+        onPress={_onPressLogin}>
+        <Text style={styles.loginText}>LOGIN</Text>
+      </TouchableOpacity>
+      <TouchableOpacity>
+        <Text style={styles.forgot}>Forgot Password?</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+
+function App() {
+  return (
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="LoginScreen" component={LoginScreen} options={{ headerShown: false }}/>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }
+
+export default App;
 
 const styles = StyleSheet.create({
   container: {
