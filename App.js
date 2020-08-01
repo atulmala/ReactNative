@@ -2,46 +2,35 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import { StyleSheet, View, Text, TextInput, TouchableOpacity } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
 import Constants from "expo-constants";
 const { manifest } = Constants;
 import Toast from 'react-native-toast-message';
 import * as Device from 'expo-device';
-
 
 export default function App() {
   const api = (typeof manifest.packagerOpts === `object`) && manifest.packagerOpts.dev
     ? manifest.debuggerHost.split(`:`).shift().concat(`:3000`)
     : `api.example.com`;
   console.log(api);
-  
-  const toastConfig = {
-    'error': () => (
-      <View style=
-        {{
-          height: 60,
-          width: '80%',
-          fontSize: 24,
-          justifyContent: "center",
-          backgroundColor: 'pink',
-          borderRadius: 15,
-          padding: 20
-        }}>
-        <Text>{toastMessage}</Text>
-      </View>
-    ),
-    'info': () => { },
-    'any_custom_type': () => { }
-  }
 
   var login_id = "";
   var password = "";
   var toastMessage = "";
 
+  const Stack = createStackNavigator();
+
   const _onPressLogin = () => {
     if (login_id == "") {
       toastMessage = "Please enter Login ID";
       Toast.show({
-        text1: 'Error',
+        type: 'error',
+        position: 'top',
+        visibilityTime: 4000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+        text1: 'Error: Login ID Missing',
         text2: toastMessage,
       });
       return;
@@ -49,7 +38,13 @@ export default function App() {
     if (password == "") {
       toastMessage = "Please enter Password";
       Toast.show({
-        text1: 'error',
+        type: 'error',
+        position: 'top',
+        visibilityTime: 4000,
+        autoHide: true,
+        topOffset: 30,
+        bottomOffset: 40,
+        text1: 'Error: Password Missing',
         text2: toastMessage,
       });
       return;
@@ -69,30 +64,38 @@ export default function App() {
         'os': Device.osName,
       })
     })
-    .then((response) => response.json())
-    .then((json) => {
-      if (json.login == "successful") {
-        Toast.show({
-          text1: 'Login Successful',
-          text2: json.welcome_message,
-        });
-      }
-      else  {
-        Toast.show({
-          text1: 'Login Failed',
-          text2: json.welcome_message,
-        });
-      }
-    })
-    .catch((error) => {
-      console.error(error);
-    });;
+      .then((response) => response.json())
+      .then((json) => {
+        if (json.login == "successful") {
+          Toast.show({
+            type: 'success',
+            text1: 'Login Successful',
+            text2: json.welcome_message,
+          });
+        }
+        else {
+          Toast.show({
+            type: 'error',
+            position: 'top',
+            visibilityTime: 4000,
+            autoHide: true,
+            topOffset: 30,
+            bottomOffset: 40,
+            text1: 'Login Failed',
+            text2: 'Either Login id or Password in Incorrect',
+          });
+        }
+      })
+      .catch((error) => {
+        console.error(error);
+      });;
   }
 
   return (
     <NavigationContainer>
+      
       <View style={styles.container}>
-        <Toast config={toastConfig} ref={(ref) => Toast.setRef(ref)} />
+        <Toast ref={(ref) => Toast.setRef(ref)} />
         <Text style={styles.logo}>ClassUp</Text>
         <View style={styles.inputView} >
           <TextInput
@@ -100,6 +103,7 @@ export default function App() {
             defaultValue={login_id}
             placeholder="Enter Login ID"
             placeholderTextColor="#e8eaf6"
+            keyboardType="email-address"
             onChangeText={text => login_id = text} />
         </View>
         <View style={styles.inputView} >
